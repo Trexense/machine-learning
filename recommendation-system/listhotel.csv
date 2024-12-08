@@ -1,0 +1,24 @@
+hotel_id,hotel_name,cheap,luxurious,clean,cozy,good service,nice view,parking,pool,spa,gym,wifi,strategic,delicious,breakfast,safety,family,pet,aesthetic,disability,laundry
+h1001,The Westin Resort Nusa Dua,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,0
+h1002,The Apurva Kempinksi Bali,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1
+h1003,The 1O1 Bali Fontana Seminyak,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1
+h1004,Hotel Nikko Bali Benoa Beach,0,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,0,1,1
+h1005,"The Laguna, a Luxury Collection Resort & Spa",0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0
+h1006,W Bali - Seminyak,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1
+h1007,The Ungasan - Bali,0,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,0,0,0,1
+h1008,"The Ritz-Carlton, Bali",0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,0,1,1
+h1009,Courtyard Bali Nusa Dua Resort,0,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1
+h1010,Mamaka By Ovolo,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,0,1,1
+h1011,PrimeBiz Hotel Kuta,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,1,0,0,1,1
+h1012,Hotel Citadines Berawa Beach,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1
+h1013,Quest Hotel San Denpasar,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,1
+h1014,7 Bidadari Boutique Hotel,1,0,1,1,1,0,1,1,1,1,1,1,0,1,0,1,1,0,1,1
+h1015,Duo Legian Hotel Bali,1,0,1,1,1,0,1,1,0,0,1,0,0,1,0,0,0,0,0,1
+h1016,The Vira Bali Boutique Hotel & Suite,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,0,1
+h1017,BLoO Hotel,1,0,0,1,1,1,1,1,0,0,1,1,0,0,0,1,0,0,1,1
+h1018,Spazzio Bali Hotel,1,0,0,0,1,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0
+h1019,100 Sunset Hotel,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1
+h1020,Yello Hotel Kuta Beachwalk,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,0,0,1,1
+h1021,Bali Kuta Resort,1,0,1,1,0,0,1,1,0,0,1,1,0,1,0,0,1,0,1,1
+h1022,The Cakra Hotel,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1
+h1023,Six Senses Uluwatu,0,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1
