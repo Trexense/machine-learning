@@ -188,7 +188,7 @@ def recommend_top_n_hotel(userid, top_n):
         recommendations = sorted(zip(hotel_ids, predicted_scores), key=lambda x: x[1], reverse=True)
 
         #Take only top <top_n>
-        recommendations = recommendations[:top_n]
+        recommendations = recommendations[:int(top_n)]
 
         # Convert recommendations to a list of dictionaries, ensuring the scores are native Python float types
         recommendations_dict = [{"hotelid": hotel_id, "predicted_score": float(score)} for hotel_id, score in recommendations]
