@@ -130,3 +130,74 @@ def recommend_hotel(userid):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/recommend-hotel/<userid>/<top_n>", methods = ["GET"])
+def recommend_top_n_hotel(userid, top_n):
+    if not userid:
+        return jsonify({"error": "No userid provided"}), 400
+
+    try:
+        # Get Click Data
+        user_click_data = UserHotelClick.query.filter_by(userId=userid).all()
+        if not user_click_data:
+            return jsonify({"error": "No data found for the given userid"}), 404
+        user_click_data_list = [row.to_dict() for row in user_click_data]
+        df_click = pd.DataFrame(user_click_data_list)
+        # print(df_click.head(1))
+
+        # Get Bookmark Data
+        user_bookmark_data = UserHotelBookmark.query.filter_by(userId=userid).all()
+        if not user_bookmark_data:
+            return jsonify({"error": "No data found for the given userid"}), 404
+        user_bookmark_data_list = [row.to_dict() for row in user_bookmark_data]
+        df_bookmark = pd.DataFrame(user_bookmark_data_list)
+        # print(df_bookmark.head(1))
+
+        # Get Hotel Data
+        hotel_data = Hotel.query.all()
+        if not hotel_data:
+            return jsonify({"error": "No data found for the given userid"}), 404
+        hotel_data_list = [row.to_dict() for row in hotel_data]
+        df_hotel = pd.DataFrame(hotel_data_list)
+        # print(df_hotel.head(1))
+
+        df_user = generate_user_score.generate_user_score(df_click, df_bookmark, df_hotel)
+
+
+        user_vector = np.array(df_user).reshape(1, -1)
+        print(user_vector.dtype)
+        hotel_ids = df_hotel['hotelid'].to_numpy()
+        print(hotel_ids.dtype)
+        hotel_vectors = df_hotel.drop(['hotelid','name'],axis = 1).to_numpy()
+        print(hotel_vectors.dtype)
+        print(hotel_vectors)
+
+        user_input = np.tile(user_vector, (hotel_vectors.shape[0], 1))
+
+        # Combine inputs for prediction
+        prediction_input = [hotel_vectors, user_input]
+
+        # for item in prediction_input:
+        #     print(type(item))
+
+        # Predict scores
+        model = tf.keras.models.load_model('static/model/model.h5')
+        predicted_scores = model.predict(prediction_input).flatten()
+
+        # Rank hotels by predicted scores
+        recommendations = sorted(zip(hotel_ids, predicted_scores), key=lambda x: x[1], reverse=True)
+
+        #Take only top <top_n>
+        recommendations = recommendations[:top_n]
+
+        # Convert recommendations to a list of dictionaries, ensuring the scores are native Python float types
+        recommendations_dict = [{"hotelid": hotel_id, "predicted_score": float(score)} for hotel_id, score in recommendations]
+
+        # Print recommendations (optional for debugging)
+        print(recommendations_dict)
+
+        # Return recommendations as a JSON response
+        return jsonify({"recommendation": recommendations_dict}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
