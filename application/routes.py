@@ -201,3 +201,7 @@ def recommend_top_n_hotel(userid, top_n):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/')
+def test_api():
+    return jsonify({"message":"Ikan, ikan apa yang bisa terbang? Lelelawar"})
