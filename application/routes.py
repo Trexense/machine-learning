@@ -205,3 +205,7 @@ def recommend_top_n_hotel(userid, top_n):
 @app.route('/', methods = ["POST"])
 def test_api():
     return jsonify({"message":"Ikan, ikan apa yang bisa terbang? Lelelawar"})
+
+@app.route('/status', methods = ["GET"])
+def status():
+    return jsonify({"message":"OKKK"})
