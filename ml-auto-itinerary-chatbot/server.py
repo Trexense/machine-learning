@@ -64,7 +64,6 @@ def generate_text():
         context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
         prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
         prompt = prompt_template.format(context=context_text, question=query_text)
-        print(prompt)
         
         model = GenerativeModel('gemini-pro')
         #===
