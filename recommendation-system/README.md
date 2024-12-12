@@ -52,7 +52,7 @@ Below code is for Linux Environment
 ```
 
 
-RECOMMENDATION-SYSTEM/               		 # Code to run the serverdata-science-project/
+recommendation-system/               		 # Code to run the recommendation-system/
 │
 ├── requirements.txt             		 # Python package dependencies
 ├── data/                         		 # Data that used as knowledge for RAG
