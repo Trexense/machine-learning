@@ -25,7 +25,7 @@ with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as temp
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_file_path
 
-vertexai.init(project=project_id, location=location)
+vertexai.init(project=project_id, location='asia-southeast2')
 
 app = Flask(__name__)
 
