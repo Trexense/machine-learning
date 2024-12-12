@@ -5,6 +5,11 @@
 This Project utilizes Gemini on Vertex AI to build an AI Agent that serves as a chatbot in our application, Trexense. This system uses a Retrieval Augmented Generation (RAG) approach to provide relevant and accurate responses by combining information retrieval with advanced generative capabilities.
 
 ## Tech Stack
+- Gemini on Vertex AI
+- Langchain
+- Flask
+- ChromaDB
+
 
 ## Getting Started
 
