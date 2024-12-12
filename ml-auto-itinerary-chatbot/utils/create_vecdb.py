@@ -2,18 +2,34 @@ from langchain_community.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 from langchain_community.vectorstores import Chroma
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_google_vertexai import VertexAIEmbeddings
 import os
 import shutil
-from oauth2client.client import GoogleCredentials
-import google.generativeai as genai
+# from oauth2client.client import GoogleCredentials
+# import google.generativeai as genai
 from dotenv import load_dotenv
+import base64
+import json
+import tempfile
+import vertexai
 
 load_dotenv()
 
-genai.configure(api_key= os.getenv("GEMINI_API_KEY"))
-os.environ["GOOGLE_API_KEY"] = os.getenv("GEMINI_API_KEY")
+service_acc_string = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
+service_acc_decoded = base64.b64decode(service_acc_string).decode('utf-8')
+service_acc_json = json.loads(service_acc_decoded)
+service_acc_json = json.dumps(service_acc_json)
+
+with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as temp_file:
+    temp_file.write(service_acc_json)
+    temp_file_path = temp_file.name
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_file_path
 # genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+project_id = os.getenv("PROJECT_ID")
+location = os.getenv("LOCATION")
+
+vertexai.init(project=project_id, location=location)
 
 CHROMA_PATH = "chroma"
 DATA_PATH = "data"
@@ -58,7 +74,7 @@ def save_to_chroma(chunks: list[Document]):
 
     # Create a new DB from the documents.
     db = Chroma.from_documents(
-        chunks, GoogleGenerativeAIEmbeddings(model="models/embedding-001"), persist_directory=CHROMA_PATH
+        chunks, VertexAIEmbeddings(model="text-embedding-004"), persist_directory=CHROMA_PATH
     )
     db.persist()
     print(f"Saved {len(chunks)} chunks to {CHROMA_PATH}.")
