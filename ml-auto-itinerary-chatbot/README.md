@@ -5,11 +5,11 @@
 This Project utilizes Gemini on Vertex AI to build an AI Agent that serves as a chatbot in our application, Trexense. This system uses a Retrieval Augmented Generation (RAG) approach to provide relevant and accurate responses by combining information retrieval with advanced generative capabilities.
 
 ## Tech Stack
+
 - Gemini on Vertex AI
 - Langchain
 - Flask
 - ChromaDB
-
 
 ## Getting Started
 
@@ -62,7 +62,7 @@ curl -X POST http://127.0.0.1:8080/generate -H "Content-Type: application/json" 
 
 ```
 
-ML-AUTO-ITINERARY-CHATBOT/               # Code to run the serverdata-science-project/
+ML-AUTO-ITINERARY-CHATBOT/               # Code to run the ml-auto-itinerary-chatbot/
 │
 ├── README.md                   	 # Project overview and instructions
 ├── requirements.txt            	 # Python package dependencies
