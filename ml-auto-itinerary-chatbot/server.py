@@ -1,17 +1,30 @@
 from flask import Flask, jsonify, request
-# from dataclasses import dataclass
 from langchain_chroma import Chroma
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-import google.generativeai as genai
+from langchain_google_vertexai import VertexAIEmbeddings
 from langchain.prompts import ChatPromptTemplate
 import os
 from dotenv import load_dotenv
+import base64
+import json
+import vertexai
+from vertexai.preview.generative_models import GenerativeModel
+import tempfile
 
 load_dotenv()
 
+service_acc_string = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
+service_acc_decoded = base64.b64decode(service_acc_string).decode('utf-8')
+service_acc_json = json.loads(service_acc_decoded)
+service_acc_json = json.dumps(service_acc_json)
+
+project_id = os.getenv("PROJECT_ID")
+location = os.getenv("LOCATION")
+
+with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as temp_file:
+    temp_file.write(service_acc_json)
+    temp_file_path = temp_file.name
+
 CHROMA_PATH = "chroma"
-os.environ["GOOGLE_API_KEY"] = os.getenv("GEMINI_API_KEY")
-genai.configure(api_key= os.getenv("GEMINI_API_KEY"))
 
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context:
@@ -21,11 +34,15 @@ Answer the question based only on the following context:
 Do not Generate Any ID (ID: xxxxx) provided to you into the answer expect there are explicit instruction to do so
 
 ---
-
+=
 Answer the question based on the above context: {question}
 """
 
 app = Flask(__name__)
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_file_path
+
+vertexai.init(project=project_id, location=location)
 
 @app.route('/generate', methods=['POST'])
 def generate_text():
@@ -37,24 +54,26 @@ def generate_text():
     query_text = data['prompt']
 
     try:
-        embedding_function = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        embedding_function = VertexAIEmbeddings(model_name="text-embedding-004")
         db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 
         results = db.similarity_search_with_relevance_scores(query_text, k=5)
         if len(results) == 0 or results[0][1] < 0.1:
-            print(f"Unable to find matching results.")
-            return
+            return jsonify({"error": "No relevant results found"}), 404
 
         context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
         prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
         prompt = prompt_template.format(context=context_text, question=query_text)
-
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        
+        model = GenerativeModel('gemini-pro')
         #===
         response = model.generate_content(prompt)
 
         # Extract the text content
-        response_text = response.candidates[0].content.parts[0].text
+        try:
+            response_text = response.candidates[0].content.parts[0].text
+        except (IndexError, AttributeError) as e:
+            return jsonify({"error": "Failed to parse the model response"}), 500
 
         return jsonify({"response": response_text}), 200
     except Exception as e:
