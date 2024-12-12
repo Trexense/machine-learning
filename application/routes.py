@@ -4,8 +4,9 @@ from utils import generate_user_score
 from flask import Flask, jsonify, request
 # from dataclasses import dataclass
 from langchain_chroma import Chroma
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-import google.generativeai as genai
+from langchain_google_vertexai import VertexAIEmbeddings
+import vertexai
+from vertexai.preview.generative_models import GenerativeModel
 from langchain.prompts import ChatPromptTemplate
 import os
 from dotenv import load_dotenv
@@ -39,19 +40,18 @@ def generate_text():
     query_text = data['prompt']
 
     try:
-        embedding_function = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        embedding_function = VertexAIEmbeddings(model_name="text-embedding-004")
         chroma_db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 
         results = chroma_db.similarity_search_with_relevance_scores(query_text, k=5)
         if len(results) == 0 or results[0][1] < 0.1:
-            print(f"Unable to find matching results.")
-            return
+            return jsonify({"error": "No relevant results found"}), 404
 
         context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
         prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
         prompt = prompt_template.format(context=context_text, question=query_text)
 
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = GenerativeModel('gemini-pro')
         #===
         response = model.generate_content(prompt)
 
@@ -202,6 +202,6 @@ def recommend_top_n_hotel(userid, top_n):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route('/')
+@app.route('/', methods = ["POST"])
 def test_api():
     return jsonify({"message":"Ikan, ikan apa yang bisa terbang? Lelelawar"})
